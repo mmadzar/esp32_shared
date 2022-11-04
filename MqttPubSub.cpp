@@ -13,7 +13,7 @@ void MqttPubSub::setup()
   sprintf(channelIn, "%s/in/#", hostname);
 
   client.setClient(espClient);
-  client.setBufferSize(512);
+  client.setBufferSize(1024);
   client.setKeepAlive(30);
   client.setCallback(callback);
 
@@ -36,7 +36,7 @@ void MqttPubSub::callback(char *topic, byte *message, unsigned int length)
     else if (cmd == "reconnect" && String(msg).toInt() == 1)
       WiFi.disconnect(false, false);
     else
-      mqttMessageHandler.HandleMessage(topic, msg);
+      mqttMessageHandler.HandleMessage(cmd.c_str(), msg);
 
     status.receivedCount++;
   }
