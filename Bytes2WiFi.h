@@ -4,7 +4,7 @@
 #define MAX_NMEA_CLIENTS 1 // keep this low for increased loop performance on read() and send()
 #include <WiFi.h>
 #include <WiFiClient.h>
-#include "../src/status.h"
+#include "../status.h"
 
 class Bytes2WiFi
 {
