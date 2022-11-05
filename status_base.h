@@ -13,7 +13,6 @@ public:
 
     char upsince[29];
     char connectedsince[29];
-    char currenttime[29];
     long connectCount = 0;
     long loops = 0;
     long missedSend = 0;
@@ -35,10 +34,10 @@ public:
         freeMem = esp_get_free_heap_size();
         minFreeMem = esp_get_minimum_free_heap_size();
         root["upSince"] = upsince;
-        root["connectedsince"] = connectedsince;
+        root["connectedSince"] = connectedsince;
         root["connectCount"] = connectCount;
         root["loops"] = loops;
-        root["currentMillis"] = currentMillis;
+        root["uptime"] = (currentMillis / 600) / 100.00;
         root["freeMem"] = freeMem;
         root["minFreeMem"] = minFreeMem;
         root["ipAddress"] = ipAddress;
