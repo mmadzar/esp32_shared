@@ -33,11 +33,11 @@ public:
         rssi = WiFi.RSSI();
         freeMem = esp_get_free_heap_size();
         minFreeMem = esp_get_minimum_free_heap_size();
+        root["uptime"] = (currentMillis / 600) / 100.00;
         root["upSince"] = upsince;
         root["connectedSince"] = connectedsince;
         root["connectCount"] = connectCount;
         root["loops"] = loops;
-        root["uptime"] = (currentMillis / 600) / 100.00;
         root["freeMem"] = freeMem;
         root["minFreeMem"] = minFreeMem;
         root["ipAddress"] = ipAddress;
