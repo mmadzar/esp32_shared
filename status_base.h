@@ -36,7 +36,8 @@ public:
         minFreeMem = esp_get_minimum_free_heap_size();
         root["upSince"] = upsince;
         char ct[29];
-        strftime(ct, sizeof(ct), "%Y-%m-%d %H:%M:%S UTC", &(timeinfo));
+        getLocalTime(&timeinfo);
+        strftime(ct, sizeof(ct), "%Y-%m-%d %H:%M:%S UTC", &timeinfo);
         root["currenttime"] = ct;
         root["connectedsince"] = connectedsince;
         root["connectCount"] = connectCount;
