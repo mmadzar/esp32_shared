@@ -9,9 +9,13 @@
 class StatusBase
 {
 public:
+    struct tm timeinfo;
+
+    char upsince[30];
+    char connectedsince[25];
+    long connectCount = 0;
     long loops = 0;
     long missedSend = 0;
-    long bootedMillis = 0;
     long currentMillis = 0;
     uint32_t freeMem = 0;
     uint32_t minFreeMem = 0;
@@ -25,13 +29,13 @@ public:
     JsonObject PrepareRoot()
     {
         JsonObject root = doc.to<JsonObject>();
-
         // refresh values
         rssi = WiFi.RSSI();
         freeMem = esp_get_free_heap_size();
         minFreeMem = esp_get_minimum_free_heap_size();
-
-        root["uptime"] = (currentMillis - bootedMillis) / 1000;
+        root["upSince"] = upsince;
+        root["connectedsince"] = connectedsince;
+        root["connectCount"] = connectCount;
         root["loops"] = loops;
         root["currentMillis"] = currentMillis;
         root["freeMem"] = freeMem;

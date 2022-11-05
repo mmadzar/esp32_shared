@@ -10,6 +10,7 @@ char *buff2 = new char[50];
 IPAddress ipA;
 IPAddress ipAG;
 bool connecting = false;
+bool startedTimeUpdated = false;
 
 WiFiOTA::WiFiOTA()
 {
@@ -143,6 +144,7 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
     Serial.println("Authentication mode of access point has changed");
     break;
   case SYSTEM_EVENT_STA_GOT_IP:
+    status.connectCount++;
     connecting = false;
     ipA = WiFi.localIP();
     sprintf(buff, "%d.%d.%d.%d", ipA[0], ipA[1], ipA[2], ipA[3]);
@@ -154,6 +156,16 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
     status.SSID = WiFi.SSID();
     digitalWrite(pinsSettings.led, LOW);
     Serial.printf("SSID: %s  RSSI: %d\n", status.SSID, WiFi.RSSI());
+
+    // Set time
+    configTime(3 * 3600, 0, "pool.ntp.org");
+    getLocalTime(&(status.timeinfo));
+    if (!startedTimeUpdated)
+    {
+      startedTimeUpdated = true;
+      strftime(status.upsince, sizeof(status.upsince), "%Y-%m-%d %H:%M:%S", &(status.timeinfo));
+    }
+    strftime(status.connectedsince, sizeof(status.connectedsince), "%Y-%m-%d %H:%M:%S", &(status.timeinfo));
     break;
   case SYSTEM_EVENT_STA_LOST_IP:
     Serial.println("Lost IP address and IP address is reset to 0");

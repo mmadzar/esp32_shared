@@ -5,7 +5,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "appconfig.h"
-#include "../secrets.h"
+#include "../../secrets.h"
 #include "status.h"
 #include "./MqttMessageHandler.h"
 

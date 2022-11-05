@@ -132,21 +132,21 @@ void Bytes2WiFi::read()
 
 void Bytes2WiFi::handle()
 {
-    if (WiFi.isConnected())
+    if (status.SSID != "")
     {
         read();
-        currentMicros = micros();
-        if ((currentMicros - lastBroadcast) > 1000000ul) // every second send out a broadcast ping
-        {
-            uint8_t buff[4] = {0x1C, 0xEF, 0xAC, 0xED};
-            lastBroadcast = currentMicros;
-            wifiUDPServer.beginPacket(broadcastAddr, 17222);
-            wifiUDPServer.write(buff, 4);
-            wifiUDPServer.endPacket();
-        }
         if (position > 0)
         {
             send();
+        }
+
+        if ((status.currentMillis - lastBroadcast) > 1000) // every second send out a broadcast ping
+        {
+            uint8_t buff[4] = {0x1C, 0xEF, 0xAC, 0xED};
+            lastBroadcast = status.currentMillis;
+            wifiUDPServer.beginPacket(broadcastAddr, 17222);
+            wifiUDPServer.write(buff, 4);
+            wifiUDPServer.endPacket();
         }
     }
 }

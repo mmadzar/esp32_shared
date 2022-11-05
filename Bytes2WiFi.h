@@ -5,6 +5,7 @@
 #define MAX_NMEA_CLIENTS 1
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include "../src/status.h"
 
 class Bytes2WiFi
 {
@@ -24,7 +25,6 @@ private:
     byte wifiCommand[128];
     int wifiCmdPos = 0;
     uint32_t lastMicros;
-    uint32_t currentMicros;
     WiFiUDP wifiUDPServer;
     uint32_t lastBroadcast;
 };
