@@ -1,0 +1,16 @@
+548
+14:38:50.291 > Guru Meditation Error: Core  1 panic'ed (LoadStoreError). Exception was unhandled.
+14:38:50.300 > 
+14:38:50.300 > Core  1 register dump:
+14:38:50.303 > PC      : 0x400d8f6e  PS      : 0x00060130  A0      : 0x800d519c  A1      : 0x3ffb26b0  
+14:38:50.309 > A2      : 0x3ffc3590  A3      : 0x3ffb270c  A4      : 0xfffffffe  A5      : 0x0004d8f4  
+14:38:50.317 > A6      : 0x0000001d  A7      : 0xff000000  A8      : 0x40000000  A9      : 0x3ffb2690  
+14:38:50.324 > A10     : 0x3ffc368d  A11     : 0x00000000  A12     : 0x3ffb26fc  A13     : 0x0000ff00  
+14:38:50.332 > A14     : 0x00ff0000  A15     : 0xff000000  SAR     : 0x00000009  EXCCAUSE: 0x00000003  
+14:38:50.340 > EXCVADDR: 0x40000000  LBEG    : 0x4008b701  LEND    : 0x4008b711  LCOUNT  : 0xffffffff  
+14:38:50.348 > 
+14:38:50.348 > 
+14:38:50.348 > Backtrace:0x400d8f6b:0x3ffb26b00x400d5199:0x3ffb26d0 0x400d8965:0x3ffb27a0 0x400f12ad:0x3ffb2820 
+14:38:50.357 > 
+14:38:50.357 > 
+14:38:50.357 > 
