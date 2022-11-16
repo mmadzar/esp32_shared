@@ -72,7 +72,8 @@ bool MqttPubSub::reconnect()
       if (connect(HOST_NAME, currentMqttConfig.mqtt.username, currentMqttConfig.mqtt.password))
       {
         client.subscribe(channelIn);
-        Serial.print("Listening: ");
+        client.subscribe("#"); // listen all
+        Serial.print("Listening: #, ");
         Serial.println(channelIn);
 
         // subscribe to extra channels
