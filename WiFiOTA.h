@@ -6,6 +6,8 @@
 #include <esp_wifi.h>
 #include <ESPmDNS.h>
 #include <esp_wpa2.h>
+#include "appconfig.h"
+#include "../../secrets.h"
 #include "status.h"
 
 class WiFiOTA
