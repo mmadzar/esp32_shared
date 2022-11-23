@@ -110,7 +110,6 @@ void Bytes2WiFi::read()
                 //  execute command
                 if (strcmp(cmd, "ping") == 0)
                 {
-                    status.counts += 100;
                     addBuffer("pong", 4);
                     wifiCmdPos = 0;
                 }
