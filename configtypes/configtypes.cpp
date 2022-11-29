@@ -35,3 +35,9 @@ SwitchConfig::SwitchConfig(devicet device, const char *key, uint8_t pin, switcht
     this->pin = pin;
     this->switchtype = switchtype;
 }
+
+CollectorConfig::CollectorConfig(const char *name, int sendRate)
+{
+    this->name = name;
+    this->sendRate = sendRate;
+}

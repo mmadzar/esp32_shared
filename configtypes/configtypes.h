@@ -40,4 +40,11 @@ public:
     uint8_t channel; // pwm_signal type only
 };
 
+class CollectorConfig
+{
+public:
+    CollectorConfig(const char *name, int sendRate);
+    const char *name;
+    int sendRate; // number of ms between sends. collects between
+};
 #endif
