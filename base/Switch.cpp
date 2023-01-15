@@ -41,12 +41,12 @@ int &Switch::onChange(THandlerFunction_Change fn)
 
 void Switch::set(int value)
 {
-    status.switches[pinsSettings.getSwitchIndex(config->device)] = value;
+    status.switches[settings.getSwitchIndex(config->device)] = value;
 }
 
 void Switch::handle()
 {
-    int ix = pinsSettings.getSwitchIndex(config->device);
+    int ix = settings.getSwitchIndex(config->device);
 
     // change click_once button state
     if (lastTimeSet != -1 && config->switchtype == switcht::click_once && status.currentMillis - lastTimeSet > intervals.click_onceDelay)

@@ -45,6 +45,6 @@ class CollectorConfig
 public:
     CollectorConfig(const char *name, int sendRate);
     const char *name;
-    int sendRate; // number of ms between sends. collects between
+    int sendRate; // number of ms between sends. collects between, timeout time
 };
 #endif
