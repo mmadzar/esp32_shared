@@ -39,8 +39,6 @@ void MqttPubSub::callback(char *topic, byte *message, unsigned int length)
         ESP.restart();
       else if (cmd == "reconnect" && String(msg).toInt() == 1)
         WiFi.disconnect(false, false);
-      Serial.printf("topic %S\r\n", topic);
-      Serial.printf("cmd %S\r\n", cmd);
     }
     else
     {
