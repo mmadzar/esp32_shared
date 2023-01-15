@@ -16,21 +16,25 @@ void MqttPubSub::setup()
   client.setBufferSize(1024);
   client.setKeepAlive(30);
   client.setCallback(callback);
-
+  Serial.println("Mqtt setup...");
   SETTINGS.loadSettings();
 }
 
 void MqttPubSub::callback(char *topic, byte *message, unsigned int length)
 {
-  char msg[length + 1];
-  for (size_t i = 0; i < length; i++)
-    msg[i] = (char)message[i];
-  msg[length] = 0x0a; // important to add termination to string! messes string value if ommited
-
   String t = String(topic);
-  String cmd = t.substring(String(wifiSettings.hostname).length() + 4, t.length());
-  if (length > 0)
+  if (length > 0 && t.startsWith(wifiSettings.hostname))
   {
+    char msg[length + 1];
+    for (size_t i = 0; i < length; i++)
+      msg[i] = (char)message[i];
+    msg[length] = 0x0a; // important to add termination to string! messes string value if ommited
+
+    String cmd(t);
+    cmd.replace(wifiSettings.hostname, "");
+    cmd = cmd.substring(4, cmd.length());
+    Serial.printf("cmd %S", cmd);
+
     if (cmd == "restart" && String(msg).toInt() == 1)
       ESP.restart();
     else if (cmd == "reconnect" && String(msg).toInt() == 1)
@@ -74,11 +78,13 @@ bool MqttPubSub::reconnect()
         client.subscribe(channelIn);
         Serial.print("Listening: ");
         Serial.println(channelIn);
+        for (size_t i = 0; i < ListenChannelsCount; i++)
+        {
+          client.subscribe(settings.listenChannels[i]);
+          Serial.println(settings.listenChannels[i]);
+        }
 
-        // subscribe to extra channels
-        // client.subscribe("#");
-
-        digitalWrite(pinsSettings.led, LOW);
+        digitalWrite(settings.led, LOW);
         publishStatus(false);
       }
     }

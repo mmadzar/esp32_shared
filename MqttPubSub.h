@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include "appconfig.h"
-#include "../../secrets.h"
 #include "status.h"
 #include "./MqttMessageHandler.h"
 
@@ -13,7 +11,6 @@ class MqttPubSub
 {
 public:
   PubSubClient client;
-  PinsSettings pinsSettings;
   int lastMillis = 0;
   MqttPubSub();
   void publishStatus(bool waitForInterval);

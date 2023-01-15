@@ -15,16 +15,16 @@ bool startedTimeUpdated = false;
 
 WiFiOTA::WiFiOTA()
 {
-    sprintf(buff3, "");
-    status.SSID = buff3;
+  sprintf(buff3, "");
+  status.SSID = buff3;
 }
 
 void WiFiOTA::setupWiFi()
 {
   // esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_11B); // to get best signal
+  Serial.println("WiFi setup...");
   SETTINGS.loadSettings();
   esp_wifi_set_storage(WIFI_STORAGE_RAM);
-  Serial.println("WiFi setup... ");
   WiFi.setHostname(HOST_NAME);
   WiFi.persistent(false);
   WiFi.onEvent(WiFiEvent);
@@ -37,7 +37,8 @@ void WiFiOTA::ReconnectWiFi()
   if (!connecting)
   {
     connecting = true;
-    WiFiConfig currentNetwork = SETTINGS.APlist[positionAP];
+    WiFiConfig currentNetwork(SETTINGS.APlist[positionAP]);
+
     Serial.printf("Connecting to %s...\n", currentNetwork.ssid);
     if (currentNetwork.username && strcmp(currentNetwork.username, "") != 0 && currentNetwork.username != 0x00) // enterprise network
     {
@@ -120,7 +121,7 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
   switch (event)
   {
   case SYSTEM_EVENT_WIFI_READY:
-    digitalWrite(pinsSettings.led, HIGH);
+    digitalWrite(settings.led, HIGH);
     Serial.println("WiFi interface ready");
     break;
   case SYSTEM_EVENT_SCAN_DONE:
@@ -138,7 +139,7 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
     break;
   case SYSTEM_EVENT_STA_DISCONNECTED:
     Serial.printf("Disconnected from WiFi access point %s.\n", status.SSID);
-    digitalWrite(pinsSettings.led, HIGH);
+    digitalWrite(settings.led, HIGH);
     status.ipAddress = "none";
     status.gatewayAddress = "255.255.255.255";
     sprintf(buff3, "");
@@ -160,7 +161,7 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
     Serial.printf("IP: %s  GW: %s\n", status.ipAddress, status.gatewayAddress);
     sprintf(buff3, "%S", WiFi.SSID());
     status.SSID = buff3;
-    digitalWrite(pinsSettings.led, LOW);
+    digitalWrite(settings.led, LOW);
     Serial.printf("SSID: %s  RSSI: %d\n", status.SSID, WiFi.RSSI());
 
     // Set time
