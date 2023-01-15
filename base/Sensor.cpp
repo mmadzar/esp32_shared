@@ -29,39 +29,39 @@ void Sensor::handle()
         {
             bool valueChanged = false;
             // ignore adc value errors
-            //TODO if (abs((tempValues / sumValuesCount) - lastValueRead) > config->adc_ignore_points)
+            // TODO if (abs((tempValues / sumValuesCount) - lastValueRead) > config->adc_ignore_points)
             //{
-                lastValueRead = tempValues / sumValuesCount;
-                valueChanged = true;
+            lastValueRead = tempValues / sumValuesCount;
+            valueChanged = true;
 
-                if (minValue > lastValueRead)
-                {
-                    minValue = lastValueRead;
-                }
+            if (minValue > lastValueRead)
+            {
+                minValue = lastValueRead;
+            }
 
-                if (maxValue < lastValueRead)
-                {
-                    maxValue = lastValueRead;
-                }
-                switch (config->sensortype)
-                {
-                case sensort::temperature:
-                    result = calculateTemperature(lastValueRead) * 100.0;
-                    break;
-                case sensort::voltage:
-                    result = calculateVoltage(lastValueRead) * 1000.0;
-                    break;
-                case sensort::adc:
-                    result = lastValueRead;
-                    break;
-                default:
-                    break;
-                }
-                if (/* TODO valueChanged || */ lastOnChangeTime + millisecondsBetweenOnChanges < status.currentMillis)
-                {
-                    lastOnChangeTime = status.currentMillis;
-                    _change_callback(config->name, config->device, result);
-                }
+            if (maxValue < lastValueRead)
+            {
+                maxValue = lastValueRead;
+            }
+            switch (config->sensortype)
+            {
+            case sensort::temperature:
+                result = calculateTemperature(lastValueRead) * 100.0;
+                break;
+            case sensort::voltage:
+                result = calculateVoltage(lastValueRead) * 1000.0;
+                break;
+            case sensort::adc:
+                result = lastValueRead;
+                break;
+            default:
+                break;
+            }
+            if (/* TODO valueChanged || */ lastOnChangeTime + millisecondsBetweenOnChanges < status.currentMillis)
+            {
+                lastOnChangeTime = status.currentMillis;
+                _change_callback(config->name, config->device, result);
+            }
             //}
             samplesCollected = 0;
             tempValues = 0;
@@ -71,11 +71,18 @@ void Sensor::handle()
 
 double Sensor::calculateTemperature(int adc_value)
 {
+    // double Vout, Rth, temperature;
+
+    // Vout = adc_value * config->VCC / config->adc_resolution;
+    // Rth = (double)config->R2 * Vout / (config->VCC - Vout);
+
+    // // Steinhart-Hart Thermistor Equation:
+    // temperature = (1.0 / (1.0 / To + log(Rth / (double)config->R2) / Beta)) - 273.15;
+    // return temperature;
+
     double Vout, Rth, temperature;
-
     Vout = (adc_value * config->VCC) / config->adc_resolution;
-    Rth = (config->VCC * config->R1 / Vout) - config->R1;
-
+    Rth = (config->VCC * config->R2 / Vout) - config->R2;
     /*  Steinhart-Hart Thermistor Equation:
         Temperature in Kelvin = 1 / (A + B[ln(R)] + C[ln(R)]^3)
         where A = 0.001129148, B = 0.000234125 and C = 8.76741*10^-8  */
@@ -87,8 +94,9 @@ double Sensor::calculateTemperature(int adc_value)
 
 double Sensor::calculateVoltage(int adc_value)
 {
-    double voltage = ((adc_value * config->VCC) / config->adc_resolution) * (1 + (config->R1 / config->R2));
-    voltage += 0.28;       // custom correction factor for this components setup
-    int r = voltage * 100; // round to two decimal places
-    return r / 100.0;
+    double voltage = ((adc_value * config->VCC) / (double)config->adc_resolution) / ((double)config->R2 / ((double)config->R1 + (double)config->R2));
+    voltage += 0.28; // custom correction factor for this components setup
+    return voltage;
+    // int r = voltage * 100; // round to two decimal places
+    // return r / 100.0;
 }

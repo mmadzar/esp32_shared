@@ -19,8 +19,8 @@ public:
     uint8_t pin;
     // 330/440 for 5 volts sensors
     // 10k/2.8k for 15 volts sensors
-    int R1 = 10000;             // voltage only
-    int R2 = 2000;              // temperature and voltage
+    int R1 = 2000;              // voltage only
+    int R2 = 10000;             // temperature and voltage
     int timeout = 30;           // report value as changed after 30 seconds if there even is no change
     double VCC = 3.3;           // NodeMCU on board 3.3v vcc
     int adc_resolution = 4095;  // 12-bit adc
