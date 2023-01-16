@@ -40,14 +40,11 @@ void MqttPubSub::callback(char *topic, byte *message, unsigned int length)
       else if (cmd == "reconnect" && String(msg).toInt() == 1)
         WiFi.disconnect(false, false);
     }
-    else
-    {
-      mqttMessageHandler.HandleMessage(cmd.c_str(), msg, length + 1);
-      mqttMessageHandler.callback(topic, message, length);
-    }
 
     // status.receivedCount++;
+    mqttMessageHandler.HandleMessage(cmd.c_str(), msg, length + 1);
   }
+  mqttMessageHandler.callback(topic, message, length);
 }
 
 bool MqttPubSub::reconnect()
