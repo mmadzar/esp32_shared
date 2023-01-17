@@ -22,7 +22,10 @@ void Sensor::handle()
     if (skipSteps < skipStepsCounter)
     {
         skipStepsCounter = 0;
-        tempValues += analogRead(config->pin);
+        if (config->sensortype == sensort::digital)
+            tempValues += (uint16_t)digitalRead(config->pin);
+        else
+            tempValues += analogRead(config->pin);
         samplesCollected++;
         double result = 0;
         if (samplesCollected == sumValuesCount)
@@ -52,6 +55,9 @@ void Sensor::handle()
                 result = calculateVoltage(lastValueRead) * 1000.0;
                 break;
             case sensort::adc:
+                result = lastValueRead;
+                break;
+            case sensort::digital:
                 result = lastValueRead;
                 break;
             default:

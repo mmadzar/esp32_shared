@@ -12,7 +12,8 @@ enum class sensort
 {
     adc,
     temperature,
-    voltage
+    voltage,
+    digital
 };
 
 enum class devicet
