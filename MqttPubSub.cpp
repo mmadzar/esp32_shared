@@ -39,10 +39,10 @@ void MqttPubSub::callback(char *topic, byte *message, unsigned int length)
         ESP.restart();
       else if (cmd == "reconnect" && String(msg).toInt() == 1)
         WiFi.disconnect(false, false);
-    }
 
-    // status.receivedCount++;
-    mqttMessageHandler.HandleMessage(cmd.c_str(), msg, length + 1);
+      // status.receivedCount++;
+      mqttMessageHandler.HandleMessage(cmd.c_str(), msg, length + 1);
+    }
   }
   mqttMessageHandler.callback(topic, message, length);
 }
