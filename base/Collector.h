@@ -22,7 +22,7 @@ private:
     long lastSend = 0; // last miliseconds when message was send
     THandlerFunction_Change _change_callback;
 
-    int value = 0;            // accumulated value
+    long value = 0;           // accumulated value
     int collectedSamples = 0; // number of collected samples
     int lastAverage = 0;      // last calculated average
     int min = 0;
