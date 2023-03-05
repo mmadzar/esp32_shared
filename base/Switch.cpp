@@ -15,17 +15,15 @@ void Switch::setup()
         set(0);
         break;
     case switcht::pwm_signal:
-        ledcAttachPin(config->pin, config->channel); // assign a pin to a channel
 
         // Initialize channels
         // channels 0-15, resolution 1-16 bits, freq limits depend on resolution
-        // ledcSetup(uint8_t channel, uint32_t freq, uint8_t resolution_bits);
-        ledcSetup(config->channel, 200, 7); // 200 Hz PWM, 7-bit resolution (0-127) - for pump
-        // Serial.print("seting up pwm channel: ");
-        // Serial.print(config->channel);
-        // Serial.print(" at pin: ");
-        // Serial.println(config->pin);
+        if (config->channel == 3)
+            ledcSetup(config->channel, 1000, 8); // 1 kHz PWM, 8-bit resolution (0-255) - for charger EVSE
+        else
+            ledcSetup(config->channel, 200, 7); // 200 Hz PWM, 7-bit resolution (0-127) - for pump
         set(0);
+        ledcAttachPin(config->pin, config->channel); // assign a pin to a channel
         break;
     default:
         break;
@@ -64,7 +62,7 @@ void Switch::handle()
             digitalWrite(config->pin, lastValueSet);
             break;
         case switcht::pwm_signal:
-            ledcWrite(config->channel, lastValueSet); // set the speed of pump - write inverted value
+            ledcWrite(config->channel, lastValueSet); // set the speed of pump - uses inverted value because GND is switched
             break;
         case switcht::click_once:
             digitalWrite(config->pin, lastValueSet);

@@ -24,7 +24,7 @@ public:
     const char *SSID = "                  ";
     int8_t rssi = 0;
     long receivedCount = 0;
-    StaticJsonDocument<1024> doc;
+    StaticJsonDocument<2048> doc;
 
     JsonObject PrepareRoot()
     {
