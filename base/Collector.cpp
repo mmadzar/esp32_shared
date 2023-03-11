@@ -18,15 +18,13 @@ int &Collector::onChange(THandlerFunction_Change fn)
 
 void Collector::handle(int value, uint64_t timestamp)
 {
-    this->timestamp=timestamp;
     collectedSamples++;
+    this->timestamp = timestamp;
+    this->value = this->value + value;
     if (value > max || collectedSamples == 1)
         max = value;
     if (value < min || collectedSamples == 1)
         min = value;
-    if (collectedSamples == 1)
-        this->value = 0;
-    this->value = this->value + value;
     handle();
 }
 
@@ -35,9 +33,15 @@ void Collector::handle()
     if (status.currentMillis - lastSend > config->sendRate)
     {
         lastSend = status.currentMillis;
-        lastAverage = (int)((double)this->value / (double)(collectedSamples == 0 ? 1 : collectedSamples));
+        double lastAverage1 = ((double)this->value / (double)(collectedSamples == 0 ? 1 : collectedSamples));
+        if (lastAverage1 < 0.0)
+            lastAverage1 -= 0.5;
+        else
+            lastAverage1 += 0.5;
+        lastAverage1 = (int)lastAverage1;
         _change_callback(config->name, lastAverage, min, max, collectedSamples, timestamp);
+        // reset collector
         collectedSamples = 0;
-        //reset value on counter in other handle() to avoid reseting to 0 when no samples received this->value = 0;
+        this->value = 0;
     }
 }
