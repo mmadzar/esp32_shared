@@ -152,24 +152,28 @@ void MqttPubSub::handle()
   mqttMessageHandler.handle();
 }
 
-void MqttPubSub::sendMessage(String message, String channel)
+void MqttPubSub::sendMessageToTopic(String message, String topic)
 {
-  char msg[255];
-  message.toCharArray(msg, 255);
-  char chnl[255];
-  channel.toCharArray(chnl, 255);
+  message.toCharArray(tempBuffer, 2048);
+  char chnl[512];
+  topic.toCharArray(chnl, 255);
 
-  client.publish(chnl, msg);
+  client.publish(chnl, tempBuffer);
 }
 
-void MqttPubSub::sendMesssageToTopic(const char *topic, String message)
+void MqttPubSub::sendMessageToTopic(const char *topic, String message)
 {
-  char msg[255];
-  message.toCharArray(msg, 255);
-  client.publish(topic, msg);
+  message.toCharArray(tempBuffer, 2048);
+  client.publish(topic, tempBuffer);
 }
 
-void MqttPubSub::sendMesssageToTopic(const char *topic, const char *message)
+void MqttPubSub::sendMessageToTopic(String topic, const char *message)
+{
+  topic.toCharArray(tempBuffer, 2048);
+  client.publish(tempBuffer, message);
+}
+
+void MqttPubSub::sendMessageToTopic(const char *topic, const char *message)
 {
   client.publish(topic, message);
 }

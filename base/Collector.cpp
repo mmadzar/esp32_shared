@@ -16,9 +16,9 @@ int &Collector::onChange(THandlerFunction_Change fn)
     return lastAverage;
 }
 
-void Collector::handle(int value, char *timestamp)
+void Collector::handle(int value, uint64_t timestamp)
 {
-    sprintf(this->timestamp, "%S", timestamp);
+    this->timestamp=timestamp;
     collectedSamples++;
     if (value > max || collectedSamples == 1)
         max = value;

@@ -9,13 +9,13 @@ class Collector
 {
 public:
     // callback event related
-    typedef void (*THandlerFunction_Change)(const char *name, int value, int min, int max, int collectedSamples, char *timestamp);
+    typedef void (*THandlerFunction_Change)(const char *name, int value, int min, int max, int collectedSamples, uint64_t timestamp);
     int &onChange(THandlerFunction_Change fn); // This callback will be called when reading changes or timeout is exceeded
 
     Collector(CollectorConfig &config);
     void setup();
     void handle();
-    void handle(int value, char *timestamp);
+    void handle(int value, uint64_t timestamp);
 
 private:
     CollectorConfig *config;
@@ -27,7 +27,7 @@ private:
     int lastAverage = 0;      // last calculated average
     int min = 0;
     int max = 0;
-    char timestamp[29] = "                            "; // UTC microseconds timestamp
+    uint64_t timestamp = 0; // UTC microseconds timestamp
 };
 
 #endif

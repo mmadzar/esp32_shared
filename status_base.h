@@ -49,6 +49,29 @@ public:
 
         return root;
     }
+
+    void getTimestamp(char *buffer)
+    {
+        if (strcmp(SSID, "") == 0 || !getLocalTime(&(timeinfo), 10))
+            sprintf(buffer, "INVALID TIME               ");
+        else
+        {
+            long microsec = 0;
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+
+            microsec = tv.tv_usec;
+            strftime(buffer, 29, "%Y-%m-%d %H:%M:%S", &(timeinfo));
+            sprintf(buffer, "%s.%06d", buffer, microsec);
+        }
+    }
+
+    uint64_t getTimestampMicro()
+    {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        return (tv.tv_sec * 1000.0 + (tv.tv_usec / 1000.0));
+    }
 };
 
 #endif /* STATUS_BASE_H_ */

@@ -16,13 +16,13 @@ public:
   void publishStatus(bool waitForInterval);
   void setup();
   void handle();
-  void sendMessage(String message);
-  void sendMesssageToTopic(const char *topic, const char *message);
-  void sendMessage(String message, String channel);
-  void sendMesssageToTopic(const char *topic, String message);
+  void sendMessageToTopic(const char *topic, const char *message);
+  void sendMessageToTopic(const char *topic, String message);
+  void sendMessageToTopic(String topic, const char *message);
+  void sendMessageToTopic(String message, String topic);
 
 private:
-  char tempBuffer[1024];
+  char tempBuffer[2048];
   long lastReconnectAttempt = -10000;
   char channelStatus[50];
   char channelIn[50];
