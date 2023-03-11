@@ -38,7 +38,7 @@ void Collector::handle()
             lastAverage1 -= 0.5;
         else
             lastAverage1 += 0.5;
-        lastAverage1 = (int)lastAverage1;
+        lastAverage = (int)lastAverage1;
         _change_callback(config->name, lastAverage, min, max, collectedSamples, timestamp);
         // reset collector
         collectedSamples = 0;
