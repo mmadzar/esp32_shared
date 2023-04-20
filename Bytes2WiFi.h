@@ -1,7 +1,7 @@
 #ifndef BYTES2WIFI_H_
 #define BYTES2WIFI_H_
 
-#define MAX_NMEA_CLIENTS 1 // keep this low for increased loop performance on read() and send()
+#define MAX_NMEA_CLIENTS 2 // keep this low for increased loop performance on read() and send()
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include "../src/status.h"
@@ -11,6 +11,7 @@ class Bytes2WiFi
 public:
     Bytes2WiFi();
     void setup(uint16_t port);
+    void setup(uint16_t port, bool forwardInput);
     void send();
     void read();
     void handle();
@@ -31,6 +32,7 @@ private:
     uint32_t lastMicros;
     WiFiUDP wifiUDPServer;
     uint32_t lastBroadcast;
+    bool forwardInput = false;
 };
 
 #endif /* BYTES2WIFI_H_ */

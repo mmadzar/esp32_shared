@@ -14,6 +14,13 @@ void Bytes2WiFi::setup(uint16_t port)
     serverWiFi.setNoDelay(true);
 }
 
+void Bytes2WiFi::setup(uint16_t port, bool forwardInputToSerial)
+{
+    forwardInput = forwardInputToSerial;
+    serverWiFi.begin(port); // start TCP server
+    serverWiFi.setNoDelay(true);
+}
+
 void Bytes2WiFi::addBuffer(byte b)
 {
     if (position > BUFFER_SIZE - 1)
@@ -96,6 +103,7 @@ void Bytes2WiFi::read()
         if (TCPClient[cln])
         {
             // collect command
+            wifiCmdPos = 0;
             while (TCPClient[cln].available())
             {
                 wifiCommand[wifiCmdPos] = TCPClient[cln].read(); // read char from client
@@ -106,7 +114,6 @@ void Bytes2WiFi::read()
             String((char *)wifiCommand).toCharArray(cmd, wifiCmdPos + 1);
             if (wifiCmdPos > 1)
             {
-                // Serial.println(cmd);
                 //  execute command
                 if (strcmp(cmd, "ping") == 0)
                 {
@@ -131,10 +138,12 @@ void Bytes2WiFi::read()
                     WiFi.disconnect(false, false);
                     wifiCmdPos = 0;
                 }
+                else if (!forwardInput)
+                {
+                    // reset command if not known
+                    wifiCmdPos = 0;
+                }
             }
-            // else
-            // reset command if not known
-            wifiCmdPos = 0;
         }
     }
 }
@@ -149,7 +158,7 @@ void Bytes2WiFi::handle()
             lastReadCount = 0;
             read();
         }
-        if (status.currentMillis - lastSend > 1000) // empty buffer every second
+        if (status.currentMillis - lastSend > 20) // empty buffer every second
             if (position > 0)
             {
                 lastSend = status.currentMillis;
