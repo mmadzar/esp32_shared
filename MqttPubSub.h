@@ -24,7 +24,7 @@ public:
   void sendMessageToTopic(String message, String topic);
 
 private:
-  char tempBuffer[2048];
+  char tempBuffer[16000]; //try to fit whole json command response
   long lastReconnectAttempt = -10000;
   char channelStatus[50];
   char channelIn[50];

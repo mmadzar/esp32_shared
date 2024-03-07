@@ -13,7 +13,7 @@ void MqttPubSub::setup()
   sprintf(channelIn, "%s/in/#", hostname);
 
   client.setClient(espClient);
-  client.setBufferSize(1024);
+  client.setBufferSize(16100);
   client.setKeepAlive(30);
   client.setCallback(callback);
   Serial.println("Mqtt setup...");
@@ -154,7 +154,7 @@ void MqttPubSub::handle()
 
 void MqttPubSub::sendMessageToTopic(String message, String topic)
 {
-  message.toCharArray(tempBuffer, 2048);
+  message.toCharArray(tempBuffer, 16000);
   char chnl[512];
   topic.toCharArray(chnl, 255);
 
