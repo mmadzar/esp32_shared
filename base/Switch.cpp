@@ -44,7 +44,7 @@ void Switch::set(int value)
 
 void Switch::handle()
 {
-    int ix = settings.getSwitchIndex(config->device);
+    int ix = settings.getSwitchIndex(config->name);
 
     // change click_once button state
     if (lastTimeSet != -1 && config->switchtype == switcht::click_once && status.currentMillis - lastTimeSet > intervals.click_onceDelay)

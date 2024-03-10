@@ -166,7 +166,7 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
 
     // Set time
     configTime(3 * 3600, 0, "pool.ntp.org");
-    getLocalTime(&(status.timeinfo));
+    getLocalTime(&(status.timeinfo), 10);
     if (!startedTimeUpdated)
     {
       startedTimeUpdated = true;

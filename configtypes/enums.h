@@ -27,6 +27,7 @@ enum class devicet
     msft_02_pwm,
     msft_03_pwm,
     msft_04_pwm,
+    relay,
 
     // sensors
     adc_ntc,
@@ -36,7 +37,8 @@ enum class devicet
     adc_heater1,
     adc_heater2,
     adc_voltage,
-    reverse_light
+    reverse_light,
+    input
 };
 
 #endif
