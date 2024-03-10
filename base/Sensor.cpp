@@ -7,7 +7,8 @@ Sensor::Sensor(SensorConfig &sensorconfig)
 
 void Sensor::setup()
 {
-    pinMode(config->pin, INPUT);
+    if (config->device != devicet::input)
+        pinMode(config->pin, INPUT);
 }
 
 int &Sensor::onChange(THandlerFunction_Change fn)
@@ -23,20 +24,28 @@ void Sensor::handle()
     {
         skipStepsCounter = 0;
         if (config->sensortype == sensort::digital)
-            tempValues += (uint16_t)digitalRead(config->pin);
+        {
+            if (config->device != devicet::input) // read non SR values
+                tempValues = (uint16_t)digitalRead(config->pin);
+            else
+                tempValues = status.sensors[config->pin]; // get values from status for SR ports
+        }
         else
             tempValues += analogRead(config->pin);
         samplesCollected++;
         double result = 0;
-        if (samplesCollected == sumValuesCount)
+        if (samplesCollected == sumValuesCount || config->device == devicet::factory_btn)
         {
             bool valueChanged = false;
             // ignore adc value errors
             // TODO if (abs((tempValues / sumValuesCount) - lastValueRead) > config->adc_ignore_points)
             //{
-            lastValueRead = tempValues / sumValuesCount;
-            valueChanged = true;
 
+            if (lastValueRead != tempValues) // TODO add valid check for summed values
+            {
+                valueChanged = true;
+                lastValueRead = tempValues;
+            }
             if (minValue > lastValueRead)
             {
                 minValue = lastValueRead;
@@ -63,15 +72,15 @@ void Sensor::handle()
             default:
                 break;
             }
-            if (/* TODO valueChanged || */ lastOnChangeTime + millisecondsBetweenOnChanges < status.currentMillis)
+            if (valueChanged /* lastOnChangeTime + millisecondsBetweenOnChanges < status.currentMillis */)
             {
                 lastOnChangeTime = status.currentMillis;
                 _change_callback(config->name, config->device, result);
             }
-            //}
-            samplesCollected = 0;
-            tempValues = 0;
         }
+        samplesCollected = 0;
+        tempValues = 0;
+        // }
     }
 }
 

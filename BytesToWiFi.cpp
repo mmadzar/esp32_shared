@@ -166,3 +166,8 @@ void Bytes2WiFi::handle()
         }
     }
 }
+
+byte* Bytes2WiFi::getContent(){
+    return content;
+}
+

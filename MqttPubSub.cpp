@@ -13,10 +13,10 @@ void MqttPubSub::setup()
   sprintf(channelIn, "%s/in/#", hostname);
 
   client.setClient(espClient);
-  client.setBufferSize(1024);
+  client.setBufferSize(2048);
   client.setKeepAlive(30);
   client.setCallback(callback);
-  Serial.println("Mqtt setup...");
+  // Serial.println("Mqtt setup...");
   SETTINGS.loadSettings();
 }
 
@@ -68,18 +68,18 @@ bool MqttPubSub::reconnect()
 
     if (currentMqttConfig.ssid != "")
     {
-      Serial.println("Connecting to MQTT...");
+      // Serial.println("Connecting to MQTT...");
       // Attempt to connect
       client.setServer(currentMqttConfig.mqtt.server, currentMqttConfig.mqtt.port);
       if (connect(HOST_NAME, currentMqttConfig.mqtt.username, currentMqttConfig.mqtt.password))
       {
         client.subscribe(channelIn);
-        Serial.print("Listening: ");
-        Serial.println(channelIn);
+        // Serial.print("Listening: ");
+        // Serial.println(channelIn);
         for (size_t i = 0; i < ListenChannelsCount; i++)
         {
           client.subscribe(settings.listenChannels[i]);
-          Serial.println(settings.listenChannels[i]);
+          // Serial.println(settings.listenChannels[i]);
         }
 
         digitalWrite(settings.led, LOW);
@@ -138,7 +138,7 @@ void MqttPubSub::handle()
         if (reconnect())
         {
           lastReconnectAttempt = -10000;
-          Serial.println("mqtt connected."); // Expired waiting on inactive connection...");
+          // Serial.println("mqtt connected."); // Expired waiting on inactive connection...");
         }
       }
     }
@@ -168,6 +168,24 @@ void MqttPubSub::sendMessageToTopic(const char *topic, String message)
 }
 
 void MqttPubSub::sendMessageToTopic(String topic, const char *message)
+{
+  topic.toCharArray(tempBuffer, 2048);
+  client.publish(tempBuffer, message);
+}
+
+void MqttPubSub::sendBytesToTopic(String topic, const uint8_t *message, int length)
+{
+  topic.toCharArray(tempBuffer, 2048);
+  client.publish(tempBuffer, message, length);
+}
+
+void MqttPubSub::sendBytesToTopic(String topic, uint8_t *message, int length)
+{
+  topic.toCharArray(tempBuffer, 2048);
+  client.publish(tempBuffer, message, length);
+}
+
+void MqttPubSub::sendMessageToTopic(String topic, char *message)
 {
   topic.toCharArray(tempBuffer, 2048);
   client.publish(tempBuffer, message);

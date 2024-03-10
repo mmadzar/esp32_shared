@@ -22,7 +22,7 @@ WiFiOTA::WiFiOTA()
 void WiFiOTA::setupWiFi()
 {
   // esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_11B); // to get best signal
-  Serial.println("WiFi setup...");
+  // Serial.println("WiFi setup...");
   SETTINGS.loadSettings();
   esp_wifi_set_storage(WIFI_STORAGE_RAM);
   WiFi.setHostname(HOST_NAME);
@@ -39,7 +39,7 @@ void WiFiOTA::ReconnectWiFi()
     connecting = true;
     WiFiConfig currentNetwork(SETTINGS.APlist[positionAP]);
 
-    Serial.printf("Connecting to %s...\n", currentNetwork.ssid);
+    // Serial.printf("Connecting to %s...\n", currentNetwork.ssid);
     if (currentNetwork.username && strcmp(currentNetwork.username, "") != 0 && currentNetwork.username != 0x00) // enterprise network
     {
       esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)currentNetwork.username, strlen(currentNetwork.username));
@@ -84,14 +84,17 @@ void WiFiOTA::setupOTA()
                    type = "filesystem";
 
                  // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-                 Serial.println("Start updating " + type); })
+                 // Serial.println("Start updating " + type); 
+                 })
       .onEnd([]()
-             { Serial.println("\nEnd. Restarting..."); })
+             { // Serial.println("\nEnd. Restarting..."); 
+             })
       .onProgress([](unsigned int progress, unsigned int total)
-                  { Serial.printf("Progress: %u%%\r", (progress / (total / 100))); })
+                  { // Serial.printf("Progress: %u%%\r", (progress / (total / 100))); 
+                  })
       .onError([](ota_error_t error)
                {
-                 Serial.printf("Error[%u]: ", error);
+/*                 Serial.printf("Error[%u]: ", error);
                  if (error == OTA_AUTH_ERROR)
                    Serial.println("Auth Failed");
                  else if (error == OTA_BEGIN_ERROR)
@@ -101,7 +104,9 @@ void WiFiOTA::setupOTA()
                  else if (error == OTA_RECEIVE_ERROR)
                    Serial.println("Receive Failed");
                  else if (error == OTA_END_ERROR)
-                   Serial.println("End Failed"); });
+                   Serial.println("End Failed");  */
+                  
+                   });
 
   ArduinoOTA.begin();
 }
@@ -122,23 +127,23 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
   {
   case SYSTEM_EVENT_WIFI_READY:
     digitalWrite(settings.led, HIGH);
-    Serial.println("WiFi interface ready");
+    // Serial.println("WiFi interface ready");
     break;
   case SYSTEM_EVENT_SCAN_DONE:
-    Serial.println("Completed scan for access points.");
+    // Serial.println("Completed scan for access points.");
     //  WiFi.disconnect(false, false);
     break;
   case SYSTEM_EVENT_STA_START:
-    Serial.println("WiFi client started");
+    // Serial.println("WiFi client started");
   case SYSTEM_EVENT_STA_STOP:
     break;
-    Serial.println("WiFi clients stopped");
+    // Serial.println("WiFi clients stopped");
     break;
   case SYSTEM_EVENT_STA_CONNECTED:
-    Serial.println("Connected to access point.");
+    // Serial.println("Connected to access point.");
     break;
   case SYSTEM_EVENT_STA_DISCONNECTED:
-    Serial.printf("Disconnected from WiFi access point %s.\n", status.SSID);
+    // Serial.printf("Disconnected from WiFi access point %s.\n", status.SSID);
     digitalWrite(settings.led, HIGH);
     status.ipAddress = "none";
     status.gatewayAddress = "255.255.255.255";
@@ -147,7 +152,7 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
     connecting = false;
     break;
   case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
-    Serial.println("Authentication mode of access point has changed");
+    // Serial.println("Authentication mode of access point has changed");
     break;
   case SYSTEM_EVENT_STA_GOT_IP:
     status.connectCount++;
@@ -158,15 +163,15 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
     ipAG = WiFi.gatewayIP();
     sprintf(buff2, "%d.%d.%d.%d", ipAG[0], ipAG[1], ipAG[2], ipAG[3]);
     status.gatewayAddress = buff2;
-    Serial.printf("IP: %s  GW: %s\n", status.ipAddress, status.gatewayAddress);
+    // Serial.printf("IP: %s  GW: %s\n", status.ipAddress, status.gatewayAddress);
     sprintf(buff3, "%S", WiFi.SSID());
     status.SSID = buff3;
     digitalWrite(settings.led, LOW);
-    Serial.printf("SSID: %s  RSSI: %d\n", status.SSID, WiFi.RSSI());
+    // Serial.printf("SSID: %s  RSSI: %d\n", status.SSID, WiFi.RSSI());
 
     // Set time
     configTime(3 * 3600, 0, "pool.ntp.org");
-    getLocalTime(&(status.timeinfo));
+    getLocalTime(&(status.timeinfo), 10);
     if (!startedTimeUpdated)
     {
       startedTimeUpdated = true;
@@ -175,55 +180,55 @@ void WiFiOTA::WiFiEvent(WiFiEvent_t event)
     strftime(status.connectedsince, sizeof(status.connectedsince), "%Y-%m-%d %H:%M:%S UTC", &(status.timeinfo));
     break;
   case SYSTEM_EVENT_STA_LOST_IP:
-    Serial.println("Lost IP address and IP address is reset to 0");
+    // Serial.println("Lost IP address and IP address is reset to 0");
     break;
   case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-    Serial.println("WiFi Protected Setup (WPS): succeeded in enrollee mode");
+    // Serial.println("WiFi Protected Setup (WPS): succeeded in enrollee mode");
     break;
   case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-    Serial.println("WiFi Protected Setup (WPS): failed in enrollee mode");
+    // Serial.println("WiFi Protected Setup (WPS): failed in enrollee mode");
     break;
   case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-    Serial.println("WiFi Protected Setup (WPS): timeout in enrollee mode");
+    // Serial.println("WiFi Protected Setup (WPS): timeout in enrollee mode");
     break;
   case SYSTEM_EVENT_STA_WPS_ER_PIN:
-    Serial.println("WiFi Protected Setup (WPS): pin code in enrollee mode");
+    // Serial.println("WiFi Protected Setup (WPS): pin code in enrollee mode");
     break;
   case SYSTEM_EVENT_AP_START:
-    Serial.println("WiFi access point started");
+    // Serial.println("WiFi access point started");
     break;
   case SYSTEM_EVENT_AP_STOP:
-    Serial.println("WiFi access point  stopped");
+    // Serial.println("WiFi access point  stopped");
     break;
   case SYSTEM_EVENT_AP_STACONNECTED:
-    Serial.println("Client connected");
+    // Serial.println("Client connected");
     break;
   case SYSTEM_EVENT_AP_STADISCONNECTED:
-    Serial.println("Client disconnected");
+    // Serial.println("Client disconnected");
     break;
   case SYSTEM_EVENT_AP_STAIPASSIGNED:
-    Serial.println("Assigned IP address to client");
+    // Serial.println("Assigned IP address to client");
     break;
   case SYSTEM_EVENT_AP_PROBEREQRECVED:
-    Serial.println("Received probe request");
+    // Serial.println("Received probe request");
     break;
   case SYSTEM_EVENT_GOT_IP6:
-    Serial.println("IPv6 is preferred");
+    // Serial.println("IPv6 is preferred");
     break;
   case SYSTEM_EVENT_ETH_START:
-    Serial.println("Ethernet started");
+    // Serial.println("Ethernet started");
     break;
   case SYSTEM_EVENT_ETH_STOP:
-    Serial.println("Ethernet stopped");
+    // Serial.println("Ethernet stopped");
     break;
   case SYSTEM_EVENT_ETH_CONNECTED:
-    Serial.println("Ethernet connected");
+    // Serial.println("Ethernet connected");
     break;
   case SYSTEM_EVENT_ETH_DISCONNECTED:
-    Serial.println("Ethernet disconnected");
+    // Serial.println("Ethernet disconnected");
     break;
   case SYSTEM_EVENT_ETH_GOT_IP:
-    Serial.println("Obtained IP address");
+    // Serial.println("Obtained IP address");
     break;
   default:
     break;
